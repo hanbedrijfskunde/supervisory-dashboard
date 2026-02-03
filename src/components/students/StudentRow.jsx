@@ -60,13 +60,18 @@ export function StudentRow({
   totalMilestones,
   nextDeadline,
   onSelect,
-  onMenu
+  onMenu,
+  index = 0
 }) {
   const currentWeek = getCurrentWeek(student.startDate)
 
+  // Stagger animation delay based on row index (max 10 rows animated)
+  const animationDelay = Math.min(index, 10) * 50
+
   return (
     <tr
-      className="hover:bg-gray-50 cursor-pointer border-b border-gray-100 transition-colors"
+      className="hover:bg-gray-50 cursor-pointer border-b border-gray-100 transition-colors animate-fade-in"
+      style={{ animationDelay: `${animationDelay}ms` }}
       onClick={() => onSelect(student.id)}
       data-testid={`student-row-${student.id}`}
     >

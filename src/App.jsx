@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { AppProvider, useAppContext } from './context/AppContext'
 import { useGroups } from './hooks/useGroups'
 import { useStudents } from './hooks/useStudents'
 import { useTemplates } from './hooks/useTemplates'
 import { useCustomRoles } from './hooks/useCustomRoles'
 import { useToast } from './hooks/useToast'
+import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { GroupList } from './components/groups/GroupList'
 import { GroupForm } from './components/groups/GroupForm'
 import { GroupDeleteConfirm } from './components/groups/GroupDeleteConfirm'
@@ -18,6 +19,9 @@ import { ThisWeekPanel } from './components/dashboard/ThisWeekPanel'
 import { SettingsModal } from './components/settings/SettingsModal'
 import { Sidebar, SidebarToggle } from './components/common/Sidebar'
 import { ToastContainer } from './components/common/Toast'
+import { SearchBar } from './components/common/SearchBar'
+import { Breadcrumbs } from './components/common/Breadcrumbs'
+import { KeyboardShortcutsHelp } from './components/common/KeyboardShortcutsHelp'
 
 function AppContent() {
   const { reloadFromStorage } = useAppContext()
@@ -46,8 +50,34 @@ function AppContent() {
   // UI state - Mobile sidebar
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
+  // UI state - Search
+  const [searchQuery, setSearchQuery] = useState('')
+  const searchInputRef = useRef(null)
+
+  // UI state - Keyboard shortcuts help
+  const [showShortcutsHelp, setShowShortcutsHelp] = useState(false)
+
   // Toast notifications
   const toast = useToast()
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts({
+    '?': () => setShowShortcutsHelp(true),
+    'escape': () => {
+      setSearchQuery('')
+      setShowShortcutsHelp(false)
+    },
+    'n': () => {
+      if (selectedGroupId && !showStudentForm && !showGroupForm) {
+        handleAddStudent()
+      }
+    },
+    'g': () => {
+      if (!showStudentForm && !showGroupForm) {
+        handleNewGroup()
+      }
+    }
+  })
 
   // Group handlers
   const handleNewGroup = () => {
@@ -195,29 +225,96 @@ function AppContent() {
   const students = selectedGroupId ? getStudentsForGroup(selectedGroupId) : []
   const selectedStudent = selectedStudentId ? students.find(s => s.id === selectedStudentId) : null
 
+  // Filter students by search query
+  const filteredStudents = useMemo(() => {
+    if (!searchQuery.trim()) return students
+    const query = searchQuery.toLowerCase()
+    return students.filter(student =>
+      student.firstName?.toLowerCase().includes(query) ||
+      student.organisation?.toLowerCase().includes(query) ||
+      student.city?.toLowerCase().includes(query)
+    )
+  }, [students, searchQuery])
+
+  // Build breadcrumbs
+  const breadcrumbItems = useMemo(() => {
+    const items = [{ label: 'Home', onClick: () => { setSelectedGroupId(null); setSelectedStudentId(null) } }]
+    if (selectedGroup) {
+      items.push({
+        label: selectedGroup.name,
+        onClick: selectedStudent ? () => setSelectedStudentId(null) : undefined
+      })
+    }
+    if (selectedStudent) {
+      items.push({ label: selectedStudent.firstName })
+    }
+    return items
+  }, [selectedGroup, selectedStudent])
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-4 md:px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+      <header className="bg-white border-b border-gray-200 px-4 md:px-6 py-3">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2 min-w-0">
             <SidebarToggle onClick={() => setSidebarOpen(true)} />
-            <h1 className="text-xl md:text-2xl font-bold text-gray-900">GI Supervision Tracker</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900 truncate">GI Supervision Tracker</h1>
           </div>
-          <button
-            onClick={() => setShowSettings(true)}
-            className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-            aria-label="Settings"
-          >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          </button>
+
+          {/* Search bar - hidden on small screens, shown on medium+ */}
+          <div className="hidden md:block flex-1 max-w-md">
+            <SearchBar
+              ref={searchInputRef}
+              value={searchQuery}
+              onChange={setSearchQuery}
+              onClear={() => setSearchQuery('')}
+              placeholder="Search students..."
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* Keyboard shortcuts help button */}
+            <button
+              onClick={() => setShowShortcutsHelp(true)}
+              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors hidden md:block"
+              aria-label="Keyboard shortcuts"
+              title="Keyboard shortcuts (?)"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </button>
+            {/* Settings button */}
+            <button
+              onClick={() => setShowSettings(true)}
+              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+              aria-label="Settings"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
+          </div>
         </div>
+
+        {/* Mobile search bar */}
+        <div className="mt-3 md:hidden">
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            onClear={() => setSearchQuery('')}
+            placeholder="Search students..."
+          />
+        </div>
+
+        {/* Breadcrumbs */}
+        {breadcrumbItems.length > 1 && (
+          <Breadcrumbs items={breadcrumbItems} className="mt-3" />
+        )}
       </header>
 
-      <div className="flex h-[calc(100vh-73px)]">
+      <div className="flex h-[calc(100vh-120px)] md:h-[calc(100vh-100px)]">
         {/* Sidebar - Groups */}
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)}>
           <GroupList
@@ -260,11 +357,15 @@ function AppContent() {
                     {selectedGroup.name}
                   </h2>
                   <p className="text-gray-500 mb-6">
-                    {`${students.length} student${students.length !== 1 ? 's' : ''}`}
+                    {searchQuery ? (
+                      `${filteredStudents.length} of ${students.length} student${students.length !== 1 ? 's' : ''}`
+                    ) : (
+                      `${students.length} student${students.length !== 1 ? 's' : ''}`
+                    )}
                   </p>
 
                   <StudentTable
-                    students={students}
+                    students={filteredStudents}
                     template={selectedTemplate}
                     onSelectStudent={handleSelectStudent}
                     onMenuStudent={handleStudentMenu}
@@ -294,7 +395,7 @@ function AppContent() {
                       <p className="text-gray-500 mb-4">Create your first group to get started</p>
                       <button
                         onClick={handleNewGroup}
-                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                       >
                         <svg className="w-5 h-5 mr-2 -ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -389,6 +490,12 @@ function AppContent() {
           setSelectedStudentId(null)
           toast.success('Data updated')
         }}
+      />
+
+      {/* Keyboard Shortcuts Help */}
+      <KeyboardShortcutsHelp
+        isOpen={showShortcutsHelp}
+        onClose={() => setShowShortcutsHelp(false)}
       />
 
       {/* Toast notifications */}

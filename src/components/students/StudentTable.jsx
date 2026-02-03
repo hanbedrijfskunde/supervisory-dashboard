@@ -134,7 +134,7 @@ export function StudentTable({
         <p className="text-gray-500 mb-4">Add your first student to this group</p>
         <button
           onClick={onAddStudent}
-          className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
         >
           + Add Student
         </button>
@@ -156,7 +156,7 @@ export function StudentTable({
               id="filter-specialisation"
               value={filterSpecialisation}
               onChange={(e) => setFilterSpecialisation(e.target.value)}
-              className="block w-48 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+              className="block w-48 rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm"
               aria-label="Filter by specialisation"
             >
               <option value="">All specialisations</option>
@@ -175,7 +175,7 @@ export function StudentTable({
               id="filter-status"
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="block w-40 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+              className="block w-40 rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm"
               aria-label="Filter by status"
             >
               <option value="all">All students</option>
@@ -187,7 +187,7 @@ export function StudentTable({
 
         <button
           onClick={onAddStudent}
-          className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
+          className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 text-sm"
         >
           + Add Student
         </button>
@@ -219,7 +219,7 @@ export function StudentTable({
             </tr>
           </thead>
           <tbody>
-            {sortedStudents.map(({ student, status, completedCount, nextDeadline }) => (
+            {sortedStudents.map(({ student, status, completedCount, nextDeadline }, index) => (
               <StudentRow
                 key={student.id}
                 student={student}
@@ -230,6 +230,7 @@ export function StudentTable({
                 nextDeadline={nextDeadline}
                 onSelect={onSelectStudent}
                 onMenu={onMenuStudent}
+                index={index}
               />
             ))}
           </tbody>
