@@ -1,5 +1,5 @@
 /**
- * Reusable form input with label and validation
+ * Reusable form input with label, validation, and help text
  */
 export function Input({
   label,
@@ -7,6 +7,7 @@ export function Input({
   type = 'text',
   error,
   required = false,
+  helpText,
   className = '',
   ...props
 }) {
@@ -17,7 +18,7 @@ export function Input({
       {label && (
         <label htmlFor={inputId} className="block text-sm font-medium text-gray-700">
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && <span className="text-danger-500 ml-1">*</span>}
         </label>
       )}
       <input
@@ -25,18 +26,25 @@ export function Input({
         type={type}
         required={required}
         className={`
-          block w-full rounded-md shadow-sm text-sm
+          block w-full rounded-md shadow-sm text-sm transition-colors
           ${error
-            ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-            : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
+            ? 'border-danger-300 focus:border-danger-500 focus:ring-danger-500'
+            : 'border-gray-300 focus:border-primary-500 focus:ring-primary-500'
           }
         `}
         aria-invalid={error ? 'true' : 'false'}
-        aria-describedby={error ? `${inputId}-error` : undefined}
+        aria-describedby={
+          error ? `${inputId}-error` : helpText ? `${inputId}-help` : undefined
+        }
         {...props}
       />
+      {helpText && !error && (
+        <p id={`${inputId}-help`} className="text-sm text-gray-500">
+          {helpText}
+        </p>
+      )}
       {error && (
-        <p id={`${inputId}-error`} className="text-sm text-red-600">
+        <p id={`${inputId}-error`} className="text-sm text-danger-600">
           {error}
         </p>
       )}
@@ -53,6 +61,7 @@ export function Select({
   options = [],
   error,
   required = false,
+  helpText,
   placeholder = 'Select...',
   className = '',
   ...props
@@ -64,17 +73,17 @@ export function Select({
       {label && (
         <label htmlFor={inputId} className="block text-sm font-medium text-gray-700">
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && <span className="text-danger-500 ml-1">*</span>}
         </label>
       )}
       <select
         id={inputId}
         required={required}
         className={`
-          block w-full rounded-md shadow-sm text-sm
+          block w-full rounded-md shadow-sm text-sm transition-colors
           ${error
-            ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-            : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
+            ? 'border-danger-300 focus:border-danger-500 focus:ring-danger-500'
+            : 'border-gray-300 focus:border-primary-500 focus:ring-primary-500'
           }
         `}
         aria-invalid={error ? 'true' : 'false'}
@@ -87,8 +96,11 @@ export function Select({
           </option>
         ))}
       </select>
+      {helpText && !error && (
+        <p className="text-sm text-gray-500">{helpText}</p>
+      )}
       {error && (
-        <p className="text-sm text-red-600">{error}</p>
+        <p className="text-sm text-danger-600">{error}</p>
       )}
     </div>
   )

@@ -15,9 +15,9 @@ function formatRole(role) {
  */
 function StatusIndicator({ status }) {
   const colors = {
-    red: 'bg-red-500',
-    yellow: 'bg-yellow-500',
-    green: 'bg-green-500'
+    red: 'bg-danger-500',
+    yellow: 'bg-warning-500',
+    green: 'bg-success-500'
   }
 
   return (
@@ -38,7 +38,7 @@ function ProgressBar({ completed, total }) {
     <div className="flex items-center gap-2">
       <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
         <div
-          className="h-full bg-blue-500 rounded-full transition-all"
+          className="h-full bg-primary-500 rounded-full transition-all duration-300"
           style={{ width: `${percentage}%` }}
         />
       </div>
@@ -66,7 +66,7 @@ export function StudentRow({
 
   return (
     <tr
-      className="hover:bg-gray-50 cursor-pointer border-b border-gray-100"
+      className="hover:bg-gray-50 cursor-pointer border-b border-gray-100 transition-colors"
       onClick={() => onSelect(student.id)}
       data-testid={`student-row-${student.id}`}
     >
@@ -90,7 +90,7 @@ export function StudentRow({
       </td>
       <td className="px-4 py-3 text-gray-600 text-sm">
         {nextDeadline ? (
-          <span className={nextDeadline.status === 'overdue' ? 'text-red-600 font-medium' : ''}>
+          <span className={nextDeadline.status === 'overdue' ? 'text-danger-600 font-medium' : ''}>
             {nextDeadline.milestone.name}
             <br />
             <span className="text-xs text-gray-400">
@@ -98,7 +98,7 @@ export function StudentRow({
             </span>
           </span>
         ) : (
-          <span className="text-gray-400">All done</span>
+          <span className="text-success-600">All done</span>
         )}
       </td>
       <td className="px-4 py-3">
@@ -107,7 +107,7 @@ export function StudentRow({
             e.stopPropagation()
             onMenu(student.id, e)
           }}
-          className="p-1 text-gray-400 hover:text-gray-600 rounded"
+          className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors"
           data-testid={`student-menu-${student.id}`}
         >
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">

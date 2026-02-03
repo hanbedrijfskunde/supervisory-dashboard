@@ -58,7 +58,7 @@ describe('Student Management', () => {
       await user.type(startDateInput, startDate)
     }
 
-    await user.click(within(dialog).getByRole('button', { name: /save/i }))
+    await user.click(within(dialog).getByRole('button', { name: /add student/i }))
 
     // Wait for modal to close
     await waitFor(() => {
@@ -117,8 +117,9 @@ describe('Student Management', () => {
     await user.clear(startDateInput)
     await user.type(startDateInput, '2026-02-02')
 
-    // Submit
-    await user.click(screen.getByRole('button', { name: /save/i }))
+    // Submit (click within dialog to avoid matching the background button)
+    const dialog = screen.getByRole('dialog')
+    await user.click(within(dialog).getByRole('button', { name: /add student/i }))
 
     // Verify student appears in table
     await waitFor(() => {
@@ -312,7 +313,7 @@ describe('Student Management', () => {
     const firstNameInput = screen.getByLabelText(/first name/i)
     await user.clear(firstNameInput)
     await user.type(firstNameInput, 'UpdatedName')
-    await user.click(screen.getByRole('button', { name: /save/i }))
+    await user.click(screen.getByRole('button', { name: /save changes/i }))
 
     // Verify update
     await waitFor(() => {

@@ -47,7 +47,7 @@ describe('Student Detail View', () => {
     await user.clear(startDateInput)
     await user.type(startDateInput, '2026-02-01')
 
-    await user.click(within(dialog).getByRole('button', { name: /save/i }))
+    await user.click(within(dialog).getByRole('button', { name: /add student/i }))
 
     // Wait for student to appear
     await waitFor(() => {
@@ -267,7 +267,7 @@ describe('Student Detail View', () => {
     await user.type(nameInput, 'Anna Updated')
 
     // Save
-    await user.click(screen.getByRole('button', { name: /save/i }))
+    await user.click(screen.getByRole('button', { name: /save changes/i }))
 
     // Verify update in the header
     await waitFor(() => {

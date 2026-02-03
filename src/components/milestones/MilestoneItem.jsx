@@ -34,12 +34,12 @@ export function MilestoneItem({
     ? getMilestoneStatus(milestone, { [id]: status }, startDate)
     : done ? 'completed' : 'pending'
 
-  // Status-based styling
+  // Status-based styling with new colors
   const statusClasses = {
-    overdue: 'border-red-200 bg-red-50',
-    upcoming: 'border-yellow-200 bg-yellow-50',
+    overdue: 'border-danger-200 bg-danger-50',
+    upcoming: 'border-warning-200 bg-warning-50',
     pending: 'border-gray-200 bg-white',
-    completed: 'border-green-200 bg-green-50'
+    completed: 'border-success-200 bg-success-50'
   }
 
   const handleCheckboxChange = () => {
@@ -77,7 +77,7 @@ export function MilestoneItem({
             id={`milestone-${id}`}
             checked={done}
             onChange={handleCheckboxChange}
-            className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+            className="h-4 w-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500"
             aria-label={name}
           />
         )
@@ -90,7 +90,7 @@ export function MilestoneItem({
               id={`milestone-${id}`}
               checked={done}
               onChange={handleCheckboxChange}
-              className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+              className="h-4 w-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500"
               aria-label={name}
             />
             <input
@@ -98,7 +98,7 @@ export function MilestoneItem({
               value={date || ''}
               onChange={handleDateChange}
               data-testid={`milestone-${id}-date`}
-              className="text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="text-sm border-gray-300 rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500"
               disabled={!done}
             />
           </div>
@@ -112,7 +112,7 @@ export function MilestoneItem({
               onClick={handleDecrement}
               disabled={count <= 0}
               data-testid={`${id}-decrement`}
-              className="w-7 h-7 flex items-center justify-center rounded border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-7 h-7 flex items-center justify-center rounded border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               aria-label={`Decrease ${name}`}
             >
               −
@@ -125,7 +125,7 @@ export function MilestoneItem({
               onClick={handleIncrement}
               disabled={count >= (counterMax || 0)}
               data-testid={`${id}-increment`}
-              className="w-7 h-7 flex items-center justify-center rounded border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-7 h-7 flex items-center justify-center rounded border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               aria-label={`Increase ${name}`}
             >
               +
@@ -141,7 +141,7 @@ export function MilestoneItem({
             value={date || ''}
             onChange={handleDateChange}
             data-testid={`milestone-${id}-date`}
-            className="text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="text-sm border-gray-300 rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500"
           />
         )
 
@@ -152,7 +152,7 @@ export function MilestoneItem({
 
   return (
     <div
-      className={`p-3 border rounded-lg ${statusClasses[milestoneStatus]} milestone-${milestoneStatus}`}
+      className={`p-3 border rounded-lg transition-colors ${statusClasses[milestoneStatus]} milestone-${milestoneStatus}`}
       data-testid={`milestone-${id}`}
     >
       <div className="flex items-start justify-between gap-3">

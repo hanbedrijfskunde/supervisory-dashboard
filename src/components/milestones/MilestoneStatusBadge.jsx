@@ -4,13 +4,13 @@
 export function MilestoneStatusBadge({ status }) {
   const config = {
     overdue: {
-      bg: 'bg-red-100',
-      text: 'text-red-700',
+      bg: 'bg-danger-100',
+      text: 'text-danger-700',
       label: 'Overdue'
     },
     upcoming: {
-      bg: 'bg-yellow-100',
-      text: 'text-yellow-700',
+      bg: 'bg-warning-100',
+      text: 'text-warning-700',
       label: 'Due soon'
     },
     pending: {
@@ -19,8 +19,8 @@ export function MilestoneStatusBadge({ status }) {
       label: 'Pending'
     },
     completed: {
-      bg: 'bg-green-100',
-      text: 'text-green-700',
+      bg: 'bg-success-100',
+      text: 'text-success-700',
       label: 'Done'
     }
   }

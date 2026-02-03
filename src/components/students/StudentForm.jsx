@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Modal } from '../common/Modal'
 import { Input } from '../common/Input'
 import { Button } from '../common/Button'
+import { FormSection } from '../common/FormSection'
 import { STANDARD_ROLES } from '../../context/appReducer'
 
 /**
@@ -113,12 +114,14 @@ export function StudentForm({
       title={isEditing ? 'Edit Student' : 'Add Student'}
     >
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Required fields - always visible */}
         <Input
           id="firstName"
           label="First name"
           value={formData.firstName}
           onChange={handleChange('firstName')}
           error={errors.firstName}
+          helpText="First name only, for privacy"
           autoFocus
           required
         />
@@ -129,35 +132,58 @@ export function StudentForm({
           value={formData.organisation}
           onChange={handleChange('organisation')}
           error={errors.organisation}
+          helpText="Company or organisation name"
           required
         />
 
         <Input
-          id="organisationCity"
-          label="City"
-          value={formData.organisationCity}
-          onChange={handleChange('organisationCity')}
+          id="startDate"
+          label="Start date"
+          type="date"
+          value={formData.startDate}
+          onChange={handleChange('startDate')}
+          error={errors.startDate}
+          helpText="When the graduation internship starts"
+          required
         />
 
-        <Input
-          id="companyCoachName"
-          label="Company coach"
-          value={formData.companyCoachName}
-          onChange={handleChange('companyCoachName')}
-        />
+        {/* Optional fields - collapsible section */}
+        <FormSection
+          title="Additional Details"
+          description="Optional information about the student and supervision"
+          collapsible
+          defaultOpen={isEditing}
+        >
+          <Input
+            id="organisationCity"
+            label="City"
+            value={formData.organisationCity}
+            onChange={handleChange('organisationCity')}
+            helpText="Location of the organisation"
+          />
 
-        <Input
-          id="examinerName"
-          label="Examiner"
-          value={formData.examinerName}
-          onChange={handleChange('examinerName')}
-        />
+          <div>
+            <label htmlFor="specialisation" className="block text-sm font-medium text-gray-700 mb-1">
+              Specialisation
+            </label>
+            <select
+              id="specialisation"
+              value={formData.specialisation}
+              onChange={handleChange('specialisation')}
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+            >
+              <option value="">Select specialisation</option>
+              {template?.specialisations?.map(spec => (
+                <option key={spec} value={spec}>{spec}</option>
+              ))}
+            </select>
+            <p className="text-sm text-gray-500 mt-1">Student's programme specialisation</p>
+          </div>
 
-        <div>
-          <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
-            My role
-          </label>
-          <div className="flex gap-2">
+          <div>
+            <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+              Supervisor role
+            </label>
             <select
               id="role"
               value={formData.role}
@@ -169,7 +195,7 @@ export function StudentForm({
                   setFormData(prev => ({ ...prev, role: value }))
                 }
               }}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
             >
               <option value="">Select role...</option>
               {STANDARD_ROLES.map(role => (
@@ -180,78 +206,71 @@ export function StudentForm({
               ))}
               <option value="__custom__">+ Add custom role...</option>
             </select>
-          </div>
-          {showCustomRoleInput && (
-            <div className="mt-2 flex gap-2">
-              <Input
-                id="customRole"
-                value={customRoleInput}
-                onChange={(e) => setCustomRoleInput(e.target.value)}
-                placeholder="Enter custom role"
-                className="flex-1"
-              />
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => {
-                  if (customRoleInput.trim()) {
-                    const newRole = customRoleInput.trim()
-                    onAddCustomRole?.(newRole)
-                    setFormData(prev => ({ ...prev, role: newRole }))
-                    setCustomRoleInput('')
+            <p className="text-sm text-gray-500 mt-1">Your role in supervising this student</p>
+
+            {showCustomRoleInput && (
+              <div className="mt-2 flex gap-2">
+                <Input
+                  id="customRole"
+                  value={customRoleInput}
+                  onChange={(e) => setCustomRoleInput(e.target.value)}
+                  placeholder="Enter custom role"
+                  className="flex-1"
+                />
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => {
+                    if (customRoleInput.trim()) {
+                      const newRole = customRoleInput.trim()
+                      onAddCustomRole?.(newRole)
+                      setFormData(prev => ({ ...prev, role: newRole }))
+                      setCustomRoleInput('')
+                      setShowCustomRoleInput(false)
+                    }
+                  }}
+                >
+                  Add
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
                     setShowCustomRoleInput(false)
-                  }
-                }}
-              >
-                Add
-              </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => {
-                  setShowCustomRoleInput(false)
-                  setCustomRoleInput('')
-                }}
-              >
-                Cancel
-              </Button>
-            </div>
-          )}
-        </div>
+                    setCustomRoleInput('')
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            )}
+          </div>
 
-        <div>
-          <label htmlFor="specialisation" className="block text-sm font-medium text-gray-700 mb-1">
-            Specialisation
-          </label>
-          <select
-            id="specialisation"
-            value={formData.specialisation}
-            onChange={handleChange('specialisation')}
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          >
-            <option value="">Select specialisation</option>
-            {template?.specialisations?.map(spec => (
-              <option key={spec} value={spec}>{spec}</option>
-            ))}
-          </select>
-        </div>
+          <Input
+            id="companyCoachName"
+            label="Company coach"
+            value={formData.companyCoachName}
+            onChange={handleChange('companyCoachName')}
+            helpText="Name of the company supervisor"
+          />
 
-        <Input
-          id="startDate"
-          label="Start date"
-          type="date"
-          value={formData.startDate}
-          onChange={handleChange('startDate')}
-          error={errors.startDate}
-          required
-        />
+          <Input
+            id="examinerName"
+            label="Examiner"
+            value={formData.examinerName}
+            onChange={handleChange('examinerName')}
+            helpText="Name of the second examiner"
+          />
+        </FormSection>
 
-        <div className="flex justify-end gap-3 pt-4">
+        <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
           <Button variant="secondary" onClick={onClose}>
             Cancel
           </Button>
           <Button type="submit">
-            {isEditing ? 'Save' : 'Save'}
+            {isEditing ? 'Save Changes' : 'Add Student'}
           </Button>
         </div>
       </form>

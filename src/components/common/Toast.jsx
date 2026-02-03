@@ -27,10 +27,10 @@ export function Toast({ message, type = 'success', duration = 3000, onClose }) {
   if (!isVisible) return null
 
   const styles = {
-    success: 'bg-green-50 border-green-200 text-green-700',
-    error: 'bg-red-50 border-red-200 text-red-700',
-    warning: 'bg-yellow-50 border-yellow-200 text-yellow-700',
-    info: 'bg-blue-50 border-blue-200 text-blue-700'
+    success: 'bg-success-50 border-success-200 text-success-700',
+    error: 'bg-danger-50 border-danger-200 text-danger-700',
+    warning: 'bg-warning-50 border-warning-200 text-warning-700',
+    info: 'bg-primary-50 border-primary-200 text-primary-700'
   }
 
   const icons = {
@@ -59,7 +59,13 @@ export function Toast({ message, type = 'success', duration = 3000, onClose }) {
   return (
     <div
       role="alert"
-      className={`fixed bottom-4 right-4 z-50 flex items-center gap-3 px-4 py-3 rounded-lg border shadow-lg transition-all duration-200 ${styles[type]} ${isExiting ? 'opacity-0 translate-y-2' : 'opacity-100'}`}
+      className={`
+        fixed bottom-4 right-4 z-50 flex items-center gap-3 px-4 py-3
+        rounded-lg border shadow-lg transition-all duration-200
+        animate-slide-in-up
+        ${styles[type]}
+        ${isExiting ? 'opacity-0 translate-y-2' : 'opacity-100'}
+      `}
     >
       {icons[type]}
       <span className="font-medium">{message}</span>
@@ -71,7 +77,7 @@ export function Toast({ message, type = 'success', duration = 3000, onClose }) {
             onClose?.()
           }, 200)
         }}
-        className="ml-2 hover:opacity-70"
+        className="ml-2 hover:opacity-70 transition-opacity"
         aria-label="Dismiss"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

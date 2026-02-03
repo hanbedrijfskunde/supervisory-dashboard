@@ -7,19 +7,24 @@ export function ActionItem({ item, onClick }) {
   const { studentName, groupName, milestoneName, deadline, status } = item
 
   const statusColors = {
-    overdue: 'border-l-red-500 bg-red-50',
-    upcoming: 'border-l-yellow-500 bg-yellow-50'
+    overdue: 'border-l-danger-500 bg-danger-50',
+    upcoming: 'border-l-warning-500 bg-warning-50'
   }
 
   const dotColors = {
-    overdue: 'bg-red-500',
-    upcoming: 'bg-yellow-500'
+    overdue: 'bg-danger-500',
+    upcoming: 'bg-warning-500'
   }
 
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left p-3 border-l-4 rounded-r-lg hover:opacity-80 transition-opacity ${statusColors[status]}`}
+      className={`
+        w-full text-left p-3 border-l-4 rounded-r-lg
+        hover:opacity-80 transition-all duration-200
+        animate-fade-in
+        ${statusColors[status]}
+      `}
     >
       <div className="flex items-start gap-2">
         <span className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${dotColors[status]}`} />

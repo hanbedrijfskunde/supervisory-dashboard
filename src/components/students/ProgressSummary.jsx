@@ -38,7 +38,7 @@ export function ProgressSummary({ student, template }) {
           aria-label={`Progress: ${completed} of ${total} milestones completed`}
         >
           <div
-            className="h-full bg-blue-500 rounded-full transition-all duration-300"
+            className="h-full bg-primary-500 rounded-full transition-all duration-300"
             style={{ width: `${percentage}%` }}
           />
         </div>
@@ -48,19 +48,19 @@ export function ProgressSummary({ student, template }) {
       <div className="flex gap-4">
         {overdue > 0 && (
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-red-500 rounded-full" />
+            <span className="w-2 h-2 bg-danger-500 rounded-full" />
             <span className="text-sm text-gray-600">{overdue} overdue</span>
           </div>
         )}
         {upcoming > 0 && (
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-yellow-500 rounded-full" />
+            <span className="w-2 h-2 bg-warning-500 rounded-full" />
             <span className="text-sm text-gray-600">{upcoming} upcoming</span>
           </div>
         )}
         {overdue === 0 && upcoming === 0 && (
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-green-500 rounded-full" />
+            <span className="w-2 h-2 bg-success-500 rounded-full" />
             <span className="text-sm text-gray-600">On track</span>
           </div>
         )}

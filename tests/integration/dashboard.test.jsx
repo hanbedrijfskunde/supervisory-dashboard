@@ -47,7 +47,7 @@ describe('Dashboard and This Week Panel', () => {
     await user.clear(startDateInput)
     await user.type(startDateInput, studentData.startDate || '2026-02-01')
 
-    await user.click(within(dialog).getByRole('button', { name: /save/i }))
+    await user.click(within(dialog).getByRole('button', { name: /add student/i }))
 
     // Wait for student to appear
     await waitFor(() => {
@@ -160,10 +160,10 @@ describe('Dashboard and This Week Panel', () => {
     // Create a student with overdue items
     await setupGroupAndStudent(user, { name: 'Diana', startDate: '2026-02-01' })
 
-    // Check for red styling on overdue items
+    // Check for danger styling on overdue items
     await waitFor(() => {
       const overdueSection = screen.getByText(/overdue/i).closest('span')
-      expect(overdueSection).toHaveClass('bg-red-100')
+      expect(overdueSection).toHaveClass('bg-danger-100')
     })
   })
 
@@ -252,7 +252,7 @@ describe('Dashboard and This Week Panel', () => {
     await user.clear(startDateInput)
     await user.type(startDateInput, '2026-02-01')
 
-    await user.click(within(dialog).getByRole('button', { name: /save/i }))
+    await user.click(within(dialog).getByRole('button', { name: /add student/i }))
 
     // Wait for student to appear
     await waitFor(() => {

@@ -29,14 +29,14 @@ export function ThisWeekPanel({ onSelectItem }) {
       {/* Summary badges */}
       <div className="flex gap-3 mb-4">
         {overdueCount > 0 && (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-medium bg-red-100 text-red-700">
-            <span className="w-2 h-2 rounded-full bg-red-500" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-medium bg-danger-100 text-danger-700">
+            <span className="w-2 h-2 rounded-full bg-danger-500" />
             {overdueCount} overdue
           </span>
         )}
         {upcomingCount > 0 && (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-700">
-            <span className="w-2 h-2 rounded-full bg-yellow-500" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-medium bg-warning-100 text-warning-700">
+            <span className="w-2 h-2 rounded-full bg-warning-500" />
             {upcomingCount} upcoming
           </span>
         )}

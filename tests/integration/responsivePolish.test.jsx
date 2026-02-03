@@ -260,7 +260,7 @@ describe('Toast Notifications', () => {
     await user.clear(startDateInput)
     await user.type(startDateInput, '2026-02-01')
 
-    await user.click(within(dialog).getByRole('button', { name: /save/i }))
+    await user.click(within(dialog).getByRole('button', { name: /add student/i }))
 
     // Toast should appear for student added
     await waitFor(() => {
@@ -393,7 +393,7 @@ describe('Color Contrast', () => {
     await user.clear(startDateInput)
     await user.type(startDateInput, '2026-02-01') // 2 weeks ago, so milestones are overdue
 
-    await user.click(within(dialog).getByRole('button', { name: /save/i }))
+    await user.click(within(dialog).getByRole('button', { name: /add student/i }))
 
     vi.advanceTimersByTime(4000)
 
@@ -402,8 +402,8 @@ describe('Color Contrast', () => {
       expect(screen.getByText(/overdue/i)).toBeInTheDocument()
     })
 
-    // Verify red styling class exists
+    // Verify danger styling class exists
     const overdueSpan = screen.getByText(/overdue/i).closest('span')
-    expect(overdueSpan).toHaveClass('bg-red-100')
+    expect(overdueSpan).toHaveClass('bg-danger-100')
   })
 })
