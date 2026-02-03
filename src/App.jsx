@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo } from 'react'
 import { AppProvider, useAppContext } from './context/AppContext'
 import { useGroups } from './hooks/useGroups'
 import { useStudents } from './hooks/useStudents'
@@ -52,7 +52,6 @@ function AppContent() {
 
   // UI state - Search
   const [searchQuery, setSearchQuery] = useState('')
-  const searchInputRef = useRef(null)
 
   // UI state - Keyboard shortcuts help
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false)
@@ -232,7 +231,7 @@ function AppContent() {
     return students.filter(student =>
       student.firstName?.toLowerCase().includes(query) ||
       student.organisation?.toLowerCase().includes(query) ||
-      student.city?.toLowerCase().includes(query)
+      student.organisationCity?.toLowerCase().includes(query)
     )
   }, [students, searchQuery])
 
@@ -264,7 +263,6 @@ function AppContent() {
           {/* Search bar - hidden on small screens, shown on medium+ */}
           <div className="hidden md:block flex-1 max-w-md">
             <SearchBar
-              ref={searchInputRef}
               value={searchQuery}
               onChange={setSearchQuery}
               onClear={() => setSearchQuery('')}

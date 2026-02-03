@@ -87,7 +87,7 @@ export function StudentRow({
       <td className="px-4 py-3 text-gray-600">{student.specialisation || '-'}</td>
       <td className="px-4 py-3 text-gray-600">
         <span className="whitespace-nowrap">
-          Week {currentWeek} / {template.durationWeeks}
+          Week {currentWeek} / {template?.durationWeeks ?? '-'}
         </span>
       </td>
       <td className="px-4 py-3 w-40">
